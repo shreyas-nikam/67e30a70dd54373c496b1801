@@ -41,7 +41,6 @@ The "Adversarial Attack Visualizer" is a Streamlit application designed to illus
 
 ### Libraries Used
 
-- **SECML**: An open-source library for the development and benchmarking of adversarial machine learning algorithms.
 - **Foolbox**: Provides a set of tools to create, run, and test adversarial attacks on machine learning models.
 - **Adversarial Robustness Toolbox (ART)**: A comprehensive library designed for developing robust machine learning models and devising defenses against adversarial attacks.
 

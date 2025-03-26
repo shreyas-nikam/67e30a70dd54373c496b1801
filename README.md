@@ -1,54 +1,62 @@
-# NIST AI - Adversarial Machine Learning Lab
+# Adversarial Attack Visualizer
 
-This repository contains a Streamlit-based lab for demonstrating adversarial attacks in machine learning. The application is a multi-page interactive tool which showcases:
-- Interactive adversarial attack visualizations using Plotly.
-- Detailed documentation and explanations regarding the concepts behind adversarial machine learning.
-- Integration of open-source libraries like SECML, Foolbox, and ART.
+## Overview
+This repository contains a Streamlit application showcasing the concept of adversarial machine learning attacks and their effects on a synthetic dataset. The application leverages:
+- [SECML](https://github.com/secml/secml)
+- [Foolbox](https://github.com/bethgelab/foolbox)
+- [Adversarial Robustness Toolbox (ART)](https://github.com/Trusted-AI/adversarial-robustness-toolbox)
+  
+Users can visualize and experiment with adversarial attack parameters, observing real-time impacts on model outputs through interactive charts. This project highlights Sections 2 and 3 of the reference document (on adversarial examples and attack taxonomies).
 
 ## Features
+- Multi-page Streamlit application.
+- Synthetic dataset loading and exploration.
+- Interactive adversarial attack configuration using SECML, Foolbox, or ART.
+- Real-time visualizations with Plotly.
+- Thorough markdown explanations and tooltips describing each visualization and concept.
 
-- **Multi-Page Application**: Seamlessly navigate between an interactive adversarial attack visualizer and data overview/documentation.
-- **Interactive Visualizations**: Use sliders and controls to adjust attack parameters and see real-time Plotly graph updates.
-- **Testing**: Includes both unit tests and integration tests to ensure reliability.
-- **Dockerized**: Contains a Dockerfile and docker-compose.yml for easy containerization.
+## Getting Started
 
-## Installation
-
-1. Clone the repository.
-2. Install dependencies using:
-   ```
+### 1. Local Installation
+1. Clone this repository.
+2. Install Python 3.12 or higher.
+3. Install dependencies:
+   ```bash
+   pip install --upgrade pip
    pip install -r requirements.txt
    ```
-3. To run the application:
-   ```
+4. Run the application:
+   ```bash
    streamlit run app.py
    ```
 
-## Running Tests
-
-- Unit Tests:
-  ```
-  python -m unittest tests/unit_tests.py
-  ```
-- Integration Tests:
-  ```
-  python -m unittest tests/integration_tests.py
-  ```
-
-## Docker Instructions
-
-To build and run using Docker:
-1. Build the Docker image:
+### 2. Docker Usage
+1. Clone this repository.
+2. Build the Docker image:
+   ```bash
+   docker build -t adv-attack-visualizer .
    ```
-   docker build -t adversarial_lab .
+3. Run the Docker container:
+   ```bash
+   docker run -p 8501:8501 adv-attack-visualizer
    ```
-2. Run the container:
-   ```
-   docker run -p 8501:8501 adversarial_lab
-   ```
+4. Access the application at http://localhost:8501 in your web browser.
 
-For docker-compose:
+## Project Structure
+- **app.py**: Main Streamlit entry point (includes the boilerplate code).
+- **pages/**: Directory containing multiple Streamlit pages (data overview, attack demos, etc.).
+- **requirements.txt**: Python dependencies.
+- **Dockerfile**: Docker build instructions.
+- **README.md**: This file, explaining usage and features.
 
-## License
+## Testing
+- Test files (e.g., basic Python scripts) validate dataset loading, model training, and adversarial attack generation.
 
+## Security and Code Validation
+No destructive or suspicious commands (e.g., handling system files) exist in this repository. Any known vulnerabilities or red flags will be documented in the Streamlit frontend or addressed immediately.
+
+## License & Acknowledgments
 © 2025 QuantUniversity. All Rights Reserved.
+The purpose of this demonstration is solely for educational use and illustration.
+For more details, see the legal documentation link in the application interface.
+

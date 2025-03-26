@@ -3,57 +3,79 @@ summary: NIST AI - Adversarial Machine Learning User Guide
 feedback link: https://docs.google.com/forms/d/e/1FAIpQLSfWkOK-in_bMMoHSZfcIvAeO58PAH9wrDqcxnJABHaxiDqhSA/viewform?usp=sf_link
 environments: Web
 status: Published
-# QuCreate Streamlit Lab: A User Guide
+# QuCreate Streamlit Lab: Exploring Adversarial Attacks
 
-This codelab guides you through the QuCreate Streamlit Lab, an interactive tool designed to explore the concepts of adversarial machine learning. In this lab, you will learn about adversarial attacks, their impact on machine learning models, and ways to visualize these attacks. The lab uses a synthetic dataset to illustrate these concepts, allowing you to experiment with different attack parameters and observe their effects.
+This codelab will guide you through a Streamlit application designed to illustrate the fascinating and important concept of adversarial attacks in machine learning.  Machine learning models, despite their successes, are often vulnerable to subtle, carefully crafted perturbations in their inputs that can cause them to make incorrect predictions. This application provides a hands-on way to explore these vulnerabilities.  We'll be looking at synthetic data and a simple attack to understand the core ideas.
 
-## Navigating the QuLab Interface
+## Application Overview
 Duration: 00:02
 
-The QuLab interface is designed for easy navigation. You will find:
+This Streamlit application consists of two main pages:
 
-*   **Sidebar**: The sidebar on the left provides access to different pages within the application. Use the selectbox to switch between the "Adversarial Attack Visualizer" and the "Data Overview" pages.
-*   **Main Area**: This is where the content of the selected page is displayed, including explanations, interactive visualizations, and controls.
-*   **Footer**: The footer contains copyright information and a disclaimer regarding the educational purpose of this demonstration.
+1.  **Data Overview:**  This page introduces a synthetic dataset used for demonstration purposes. It allows you to visualize the data and understand its characteristics. Understanding your data is a crucial first step in any machine learning task, especially when considering adversarial attacks.
 
-## Understanding the Data Overview Page
+2.  **Attack Demo:** This page showcases a simplified adversarial attack on a logistic regression model. You'll be able to adjust the strength of the attack and observe its effect on the model's accuracy and predictions. This is where you will directly interact with the concept of adversarial perturbations.
+
+<aside class="positive">
+This application is designed for educational purposes, giving you a visual and interactive understanding of adversarial attacks.
+</aside>
+
+## Navigating the Application
+Duration: 00:01
+
+The application uses a sidebar for navigation. On the left side of your screen, you will find a sidebar containing the title "QuLab" and a list of pages: "Data Overview" and "Attack Demo". Click on these links to navigate to the corresponding pages.
+
+## Data Overview
 Duration: 00:05
 
-The "Data Overview" page serves as an introduction to the lab and the concepts it covers.
+This page presents a synthetic dataset generated using NumPy and visualized using Plotly.
 
-1.  **Select the Page:** Use the sidebar to select the "Data Overview" option.
-2.  **Review the Content:** Read through the information provided. This page outlines the purpose of the lab, the learning outcomes, and details about the synthetic dataset used in the demonstrations.
-3.  **Learning Outcomes:** Pay close attention to the learning outcomes to understand what you should gain from this lab. You'll learn about the vulnerabilities of machine learning models to adversarial attacks, gain a conceptual understanding of adversarial examples and attack taxonomies, and develop practical skills in experimenting with attack parameters.
-4.  **Dataset Details:** Understand that the synthetic dataset is used for demonstration purposes, and the principles can be applied to real-world datasets.
+1.  **Dataset Generation:** The application generates a dataset with features named "X", "Y", "Category" and "Time". "X" and "Y" are numerical features related to each other with added noise. "Category" is a categorical feature depending on the value of "X" (PositiveX or NegativeX). "Time" is a time-series feature.
+    
+2.  **Dataframe Display:** The first few rows of the generated dataframe are displayed using `st.dataframe`, allowing you to inspect the data directly.
+
+3.  **Visualizations:** Two interactive Plotly charts are displayed:
+    *   A scatter plot of "X" vs. "Y", colored by the "Category" feature.  This helps visualize the relationship between the numerical and categorical features.
+    *   A line plot of "Y" over "Time", showing a simple time series.
+
 <aside class="positive">
-The Data Overview page provides essential context for the rest of the lab. Make sure you understand the information presented here before moving on to the next page.
+Take some time to examine the dataframe and interact with the plots. Hover over the data points in the scatter plot to see individual data values. Understanding the data generation process will make the attack demo easier to understand.
 </aside>
 
-## Visualizing Adversarial Attacks
+## Attack Demo
 Duration: 00:10
 
-The "Adversarial Attack Visualizer" page allows you to interactively explore the effects of adversarial attacks on a synthetic signal.
+This page demonstrates a basic adversarial attack using the Adversarial Robustness Toolbox (ART) library.
 
-1.  **Select the Page:** Use the sidebar to select the "Adversarial Attack Visualizer" option.
-2.  **Observe the Original Signal:** The first graph displays the original, unperturbed signal. This represents the "clean" data that a machine learning model would typically be trained on.
-3.  **Adjust the Perturbation Magnitude:** The sidebar contains a slider labeled "Perturbation Magnitude". This slider controls the level of noise added to the original signal, simulating an adversarial attack.
-4.  **Observe the Perturbed Signal:** The second graph displays the signal after the adversarial perturbation has been applied. As you adjust the "Perturbation Magnitude" slider, observe how the signal changes. Even small perturbations can significantly alter the signal.
-5.  **Analyze the Impact:** Consider how these changes in the signal could affect the predictions of a machine learning model. In a real-world scenario, these perturbations could lead to misclassification or incorrect output.
+1.  **Model Training:** A logistic regression model is trained on the synthetic data to classify data points based on features X1 and X2. The dataset is split into training and test sets.
+
+2.  **Adversarial Attack:** The Fast Gradient Method (FGM) is used to generate adversarial examples.  FGM calculates the gradient of the loss function with respect to the input and then adds a small perturbation in the direction of the gradient.  This perturbation is designed to fool the model.
+
+3.  **Epsilon Slider:** A slider allows you to control the `epsilon` parameter of the FGM attack.  Epsilon determines the magnitude of the perturbation applied to the input data.  A larger epsilon means a stronger attack.
+
+4.  **Accuracy Evaluation:** The model is evaluated on both the original (clean) test set and the generated adversarial test set. The accuracy scores are displayed using `st.write`.
+
+5.  **Visualization:** A scatter plot visualizes a subset of the clean and adversarial samples. Points are colored by their *predicted* class.  Clean and adversarial samples are differentiated by shape.
 
 <aside class="negative">
-Keep the perturbation magnitude to a smaller value to observe the effect of small changes to the original signal.
+Experiment with the `epsilon` slider. Observe how increasing epsilon decreases the accuracy on the adversarial test set, and how this translates to data points changing class in the visualization.  Small changes to the input data can drastically affect the model's performance!
 </aside>
 
-## Experimenting with Attack Parameters
-Duration: 00:15
+## Understanding Adversarial Attacks
+Duration: 00:02
 
-The "Adversarial Attack Visualizer" page is designed for experimentation.
+This application demonstrates a key concept: machine learning models can be vulnerable to adversarial attacks. By carefully crafting small perturbations to the input data, it's possible to fool the model into making incorrect predictions. This has significant implications for the security and reliability of machine learning systems, especially in sensitive applications like autonomous driving, fraud detection, and medical diagnosis.
 
-1.  **Vary the Perturbation Magnitude:** Experiment with different values for the "Perturbation Magnitude" slider. Observe how the signal changes as you increase or decrease the magnitude of the perturbation.
-2.  **Consider Real-World Implications:** Think about how these types of attacks could be used in real-world scenarios. For example, an attacker could add small amounts of noise to an image to cause a facial recognition system to misidentify the person in the image.
-3.  **Reflect on Model Vulnerabilities:** This exercise highlights the vulnerabilities of machine learning models to adversarial attacks. Even models that perform well on clean data can be easily fooled by carefully crafted perturbations.
+## Further Exploration
+Duration: 00:05
 
-## Conclusion
-Duration: 00:03
+This codelab provides a basic introduction to adversarial attacks. You can explore further by:
 
-By completing this codelab, you should have a better understanding of adversarial attacks and their potential impact on machine learning models. You have learned how to visualize these attacks using the "Adversarial Attack Visualizer" and have experimented with different attack parameters. This knowledge is essential for developing more robust and secure machine learning systems.
+*   Trying different attack methods available in the ART library.
+*   Experimenting with different model architectures.
+*   Investigating techniques for defending against adversarial attacks (adversarial training, input sanitization, etc.).
+*   Applying these concepts to real-world datasets and problems.
+
+<aside class="positive">
+The world of adversarial machine learning is constantly evolving. By understanding the basic principles and exploring the available tools, you can contribute to building more robust and secure machine learning systems.
+</aside>

@@ -1,0 +1,6 @@
+streamlit
+plotly
+secml
+foolbox
+adversarial-robustness-toolbox
+pytest

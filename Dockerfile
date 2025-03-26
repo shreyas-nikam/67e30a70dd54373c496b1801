@@ -4,19 +4,19 @@ FROM python:3.12-slim
 # Set working directory in the container
 WORKDIR /app
 
-# Copy requirements.txt
+# Copy requirements (adjust file name if needed)
 COPY requirements.txt /app/
 
 # Install dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --upgrade pip     && pip install -r requirements.txt
 
 # Copy the rest of the application code
 COPY . /app
 
-# Set the port number via environment variable (default: 8501)
+# Set the port number via build-time or run-time environment
 ENV PORT=8501
 
-# Expose the port
+# Expose the port so Docker maps it
 EXPOSE $PORT
 
 # Run Streamlit

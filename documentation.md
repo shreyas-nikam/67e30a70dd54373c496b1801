@@ -3,180 +3,297 @@ summary: NIST AI - Adversarial Machine Learning Documentation
 feedback link: https://docs.google.com/forms/d/e/1FAIpQLSfWkOK-in_bMMoHSZfcIvAeO58PAH9wrDqcxnJABHaxiDqhSA/viewform?usp=sf_link
 environments: Web
 status: Published
-# QuCreate Streamlit Lab Codelab: Exploring Adversarial Attacks and Data Visualization
+# QuCreate Streamlit Lab: Adversarial Attack Visualizer
 
-This codelab provides a comprehensive guide to understanding and exploring the functionalities of the QuCreate Streamlit Lab application. This application serves as an educational tool to demonstrate adversarial machine learning concepts and data visualization techniques. You will learn how small perturbations, known as adversarial attacks, can affect machine learning model predictions, and how to visualize such effects using interactive plots. By the end of this codelab, you'll understand the application's structure, how to navigate between different pages, and how to interact with the adversarial attack visualizer.
+This codelab will guide you through a Streamlit application designed to visualize and demonstrate adversarial attacks on machine learning models. This application is important because it highlights the vulnerability of even simple machine learning models to carefully crafted input perturbations. Understanding these vulnerabilities is crucial for developing more robust and secure AI systems.
 
-## Setting Up the Environment
+This codelab covers the following concepts:
+
+*   **Streamlit:** Building interactive web applications with Python.
+*   **Adversarial Attacks:** Understanding the concept of adversarial examples and their impact on model predictions.
+*   **Adversarial Robustness Toolbox (ART):** Using ART to generate adversarial examples.
+*   **Fast Gradient Method (FGM):** Implementing a basic adversarial attack algorithm.
+*   **Data Visualization:** Using Plotly to visualize data and attack results.
+
+## Setting up the Environment
 Duration: 00:05
 
-Before diving into the application, ensure you have the following:
+Before you start, ensure you have the necessary libraries installed. You can install them using pip:
 
-1.  **Python:** Python 3.6 or higher is required.
-2.  **Streamlit:** Install Streamlit using pip:
+```bash
+pip install streamlit pandas numpy plotly scikit-learn adversarial-robustness-toolbox
+```
 
-    ```bash
-    pip install streamlit
-    ```
-3.  **Plotly:** Install Plotly using pip:
+Alternatively, you can run the included `test_run.py` script. This script primarily tests if all the required libraries are installed in your environment. To execute this script, run the command: `python test_run.py`
 
-    ```bash
-    pip install plotly
-    ```
-4.  **Numpy:** Install Numpy using pip:
+```python
+import sys
 
-    ```bash
-    pip install numpy
-    ```
+def test_imports():
+    try:
+        import streamlit
+        import plotly
+        import sklearn
+        import art
+        import secml
+        import foolbox
+        print('All libraries imported successfully.')
+    except ImportError as e:
+        print(f'ImportError: {e}')
+        sys.exit(1)
+
+def main():
+    test_imports()
+    print('Basic test completed successfully.')
+
+if __name__ == '__main__':
+    main()
+```
+
+<aside class="positive">
+It is good practice to set up a virtual environment to manage dependencies for each project to avoid conflicts.
+</aside>
 
 ## Running the Application
 Duration: 00:02
 
-1.  Save the provided code into the following files:
+To run the Streamlit application, navigate to the directory containing `app.py` and execute the following command:
 
-    *   `app.py` (main application file)
-    *   `pages/attack_visualizer.py`
-    *   `pages/data_overview.py`
-    *   `tests/unit_tests.py`
-    *   `tests/integration_tests.py`
+```bash
+streamlit run app.py
+```
 
-    Make sure to create the `pages` and `tests` directories.
+This command will start the Streamlit server and open the application in your web browser.
 
-2.  Navigate to the directory containing `app.py` in your terminal.
-3.  Run the application using the following command:
+## Exploring the Main Page (app.py)
+Duration: 00:03
 
-    ```bash
-    streamlit run app.py
-    ```
+The `app.py` file serves as the main entry point for the Streamlit application. It configures the page layout, sets the title, and provides a brief introduction to the application.
 
-    This will open the application in your web browser.
+```python
+import streamlit as st
 
-## Understanding the Application Structure
-Duration: 00:05
+st.set_page_config(page_title="QuCreate Streamlit Lab", layout="wide")
+st.sidebar.image("https://www.quantuniversity.com/assets/img/logo5.jpg")
+st.sidebar.divider()
+st.title("QuLab")
+st.divider()
 
-The application is structured as a multi-page Streamlit application. Here's a breakdown:
+st.write("Select a page from the sidebar to begin exploring the Adversarial Attack Visualizer.")
 
-*   **`app.py`:** This is the main entry point of the application. It handles the overall layout, title, sidebar navigation, and dynamic page loading.
-*   **`pages/attack_visualizer.py`:** This module contains the code for the "Adversarial Attack Visualizer" page, allowing users to simulate and visualize the effects of adversarial attacks on synthetic data.
-*   **`pages/data_overview.py`:** This module provides an overview of the application's purpose, learning outcomes, dataset details, and instructions.
-*   **`tests/unit_tests.py`:** This module contains unit tests for individual components of the application, like data generation and chart creation.
-*   **`tests/integration_tests.py`:** This module contains integration tests to ensure different parts of the application work together correctly, like page navigation.
+st.divider()
+st.write("© 2025 QuantUniversity. All Rights Reserved.")
+st.caption("The purpose of this demonstration is solely for educational use and illustration. "
+           "To access the full legal documentation, please visit this link. Any reproduction of this demonstration "
+           "requires prior written consent from QuantUniversity.")
+```
 
-The `app.py` file dynamically imports the selected page module based on the user's selection in the sidebar. This allows for a modular and organized application structure.
+Key components:
 
-## Exploring the Data Overview Page
-Duration: 00:05
+*   `st.set_page_config()`: Sets the page title and layout.  `layout="wide"` utilizes the full screen width.
+*   `st.sidebar.image()`: Adds an image to the sidebar, which in this case is the QuantUniversity logo.
+*   `st.title()`: Displays the main title of the application.
+*   `st.write()`: Writes text to the application.
+*   `st.caption()`: Adds a caption at the bottom of the page, typically used for disclaimers.
 
-1.  In the Streamlit application, observe the sidebar on the left.
-2.  Select "Data Overview" from the selectbox.
+This main page acts as a landing page, guiding the user to explore the other pages in the application using the sidebar.
 
-The "Data Overview" page provides context for the application. It explains the purpose of the lab, which is to demonstrate adversarial machine learning concepts using open-source tools. It also outlines the learning outcomes, dataset details, and instructions for using the application.  The page emphasizes the use of a synthetic dataset for demonstration purposes.
-
-## Interacting with the Adversarial Attack Visualizer
-Duration: 00:15
-
-1.  In the Streamlit application, select "Adversarial Attack Visualizer" from the sidebar.
-
-This page allows you to visualize the impact of adversarial attacks on a synthetic dataset.  The page generates a sine wave with added noise as the original signal. You can then introduce a perturbation, simulating an adversarial attack, and observe the change in the signal.
-
-2.  **Adjusting the Perturbation Magnitude:**
-
-    *   Locate the "Attack Parameters" section in the sidebar.
-    *   Use the "Perturbation Magnitude" slider to adjust the noise level.  The slider ranges from 0.0 to 1.0.
-    *   Observe how the "Perturbed Signal (Adversarial Attack)" graph changes as you increase the perturbation magnitude.  Even small changes can significantly alter the signal.
-
-3.  **Understanding the Graphs:**
-
-    *   The "Original Signal" graph displays the synthetic sine wave with initial noise.
-    *   The "Perturbed Signal (Adversarial Attack)" graph shows the signal after applying the adversarial perturbation. Notice how the signal deviates from the original as you increase the "Perturbation Magnitude".
-
-<aside class="positive">
-  The adversarial attack is simulated by adding random noise to the original signal. In real-world scenarios, adversarial attacks are carefully crafted perturbations designed to fool machine learning models.
-</aside>
-
-## Understanding the Code: `attack_visualizer.py`
+## Understanding the Data Overview Page (pages/01_Data_Overview.py)
 Duration: 00:10
 
-Let's examine the code behind the "Adversarial Attack Visualizer":
+This page provides an overview of a synthetic dataset used for demonstration purposes. It generates and visualizes the data using Pandas and Plotly.
+
+```python
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.express as px
+
+st.title("Data Overview")
+st.write("### Synthetic Dataset Exploration")
+
+# Generate a small synthetic dataset for demonstration
+np.random.seed(42)
+x = np.random.normal(loc=0, scale=1, size=100)
+y = x * 3.5 + np.random.normal(loc=0, scale=2, size=100)
+category = np.where(x > 0, "PositiveX", "NegativeX")
+time = pd.date_range("2023-01-01", periods=100, freq="D")
+
+df = pd.DataFrame({
+    "X": x,
+    "Y": y,
+    "Category": category,
+    "Time": time
+})
+
+st.markdown("Below is a synthetic dataset with numeric (X, Y), categorical (Category), and time-series (Time) features.")
+st.dataframe(df.head(10))
+
+st.write("## Visualizations")
+# Scatter plot
+fig_scatter = px.scatter(df, x="X", y="Y", color="Category",
+                         title="Scatter Plot of Synthetic Dataset",
+                         labels={"X": "X value", "Y": "Y value"})
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+# Line plot over time
+fig_line = px.line(df, x="Time", y="Y",
+                   title="Time-series Trend of Y",
+                   labels={"Time": "Time", "Y": "Y value"})
+st.plotly_chart(fig_line, use_container_width=True)
+
+st.markdown("**Key Observations**: - The synthetic data is randomly generated but demonstrates a linear trend plus noise between X and Y. - The categorical feature is determined by whether X is positive or negative. - The time-series aspect can be used to demonstrate adversarial perturbations in a time dimension if desired.")
+```
+
+Here's a breakdown:
+
+1.  **Data Generation**: A synthetic dataset is created using NumPy and Pandas. It includes numerical features (X, Y), a categorical feature (Category), and a time-series feature (Time).
+2.  **Displaying the Data**: The first 10 rows of the dataset are displayed using `st.dataframe()`.
+3.  **Visualizations**: Two interactive plots are generated using Plotly Express:
+    *   A scatter plot of X vs. Y, colored by the Category.
+    *   A line plot showing the time-series trend of Y.  `use_container_width=True` ensures that the plot scales to fit the container.
+4.  **Key Observations**: Important characteristics of the data are highlighted using `st.markdown()`.
+
+This page allows users to explore the dataset and understand its properties through interactive visualizations.  The synthetic data is designed to be simple and easily visualized, making it suitable for demonstrating adversarial attacks.
+
+## Analyzing the Attack Demo Page (pages/02_Attack_Demo.py)
+Duration: 00:20
+
+This page demonstrates a simple adversarial evasion attack using the Adversarial Robustness Toolbox (ART). It shows how a small perturbation can significantly affect the model's predictions.
 
 ```python
 import streamlit as st
 import numpy as np
 import plotly.express as px
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from art.attacks.evasion import FastGradientMethod
+from art.estimators.classification import SklearnClassifier
 
-def app():
-    st.header("Adversarial Attack Visualizer")
-    st.markdown(
-        "This page demonstrates the effect of adversarial attacks on a synthetic dataset. "
-        "Adjust the parameters below to simulate how small perturbations can affect a machine learning model's predictions. "
-        "For illustration purposes, we simulate an 'attack' by perturbing data."
-    )
-    
-    st.sidebar.markdown("### Attack Parameters")
-    noise_level = st.sidebar.slider("Perturbation Magnitude", min_value=0.0, max_value=1.0, value=0.1, step=0.01)
-    
-    # Synthetic data generation
-    np.random.seed(42)
-    x = np.linspace(0, 10, 100)
-    y = np.sin(x) + np.random.normal(scale=0.1, size=x.shape)
-    
-    # Apply adversarial perturbation
-    y_adv = y + noise_level * np.random.normal(size=y.shape)
-    
-    fig = px.line(x=x, y=y, title="Original Signal", labels={"x": "X", "y": "Signal"})
-    st.plotly_chart(fig, use_container_width=True)
-    
-    fig2 = px.line(x=x, y=y_adv, title="Perturbed Signal (Adversarial Attack)", labels={"x": "X", "y": "Signal"})
-    st.plotly_chart(fig2, use_container_width=True)
-    
-    st.markdown(
-        "The above graphs illustrate how a small change in the input (perturbation magnitude) can affect the underlying signal. "
-        "In a real adversarial attack scenario, such perturbations could lead to misclassification or significant deviations in model output."
-    )
+st.title("Adversarial Attack Demo")
+st.write("### Demonstration of a Simple Adversarial Evasion Attack using ART")
+
+st.markdown("**Overview**: This page showcases a minimal example of an adversarial attack on a simple logistic regression classifier. "
+            "We use the Fast Gradient Method (FGM) from the Adversarial Robustness Toolbox (ART) library to generate adversarial samples. "
+            "Adjust the perturbation level (epsilon) below to see how even slight changes can have a large impact on the model's predictions.")
+
+# Generate synthetic 2D data
+np.random.seed(42)
+num_samples = 200
+x1 = np.random.normal(loc=0, scale=1, size=num_samples)
+x2 = x1 * 1.2 + np.random.normal(loc=0, scale=1, size=num_samples)
+X = np.column_stack((x1, x2))
+y = (x1 + x2 > 0).astype(int)  # Simple decision boundary
+
+# Train a logistic regression classifier
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Wrap the trained model in an ART SklearnClassifier
+classifier = SklearnClassifier(model=model)
+
+# User-specified epsilon for adversarial attack
+epsilon = st.slider("FGM Epsilon (Attack Strength)", min_value=0.0, max_value=0.5, value=0.05, step=0.01)
+
+# Instantiate and apply the Fast Gradient Method attack
+attack = FastGradientMethod(estimator=classifier, eps=epsilon)
+X_test_adv = attack.generate(x=X_test)
+
+# Evaluate model on both clean and adversarial samples
+clean_preds = model.predict(X_test)
+adv_preds = model.predict(X_test_adv)
+
+accuracy_clean = (clean_preds == y_test).mean()
+accuracy_adv = (adv_preds == y_test).mean()
+
+st.write(f"**Accuracy on clean test set**: {accuracy_clean:.2f}")
+st.write(f"**Accuracy on adversarial test set**: {accuracy_adv:.2f}")
+
+st.markdown("Below is a 2D visualization of a subset of the clean and adversarial samples. "
+            "Points are colored by the predicted class of the logistic regression model.")
+
+subset_size = 50
+X_vis = X_test[:subset_size]
+X_vis_adv = X_test_adv[:subset_size]
+pred_clean_vis = model.predict(X_vis)
+pred_adv_vis = model.predict(X_vis_adv)
+
+df_vis = {
+    "X1": np.concatenate((X_vis[:, 0], X_vis_adv[:, 0])),
+    "X2": np.concatenate((X_vis[:, 1], X_vis_adv[:, 1])),
+    "Type": ["Clean"] * subset_size + ["Adversarial"] * subset_size,
+    "Predicted Class": np.concatenate((pred_clean_vis, pred_adv_vis)),
+}
+
+fig = px.scatter(df_vis,
+                 x="X1",
+                 y="X2",
+                 color="Predicted Class",
+                 symbol="Type",
+                 title="Clean vs. Adversarial Samples (subset)",
+                 labels={"X1": "Feature 1", "X2": "Feature 2"})
+st.plotly_chart(fig, use_container_width=True)
+
+st.markdown("**Key Takeaway**: Notice how a small perturbation (controlled by epsilon) can drastically change the model's predictions, "
+            "underscoring the vulnerability of machine learning models to adversarial attacks.")
 ```
 
-*   **Import Statements:** The code imports `streamlit`, `numpy`, and `plotly.express`.
-*   **`app()` function:** This function contains the logic for the page.
-*   **Header and Markdown:**  The code displays a header and introductory text using `st.header()` and `st.markdown()`.
-*   **Sidebar Slider:**  A slider is created in the sidebar using `st.sidebar.slider()` to control the "Perturbation Magnitude".
-*   **Synthetic Data Generation:**  NumPy is used to generate a synthetic dataset (a sine wave with noise).
-*   **Adversarial Perturbation:**  The adversarial perturbation is applied by adding random noise, scaled by the `noise_level`, to the original signal.
-*   **Plotly Charts:**  Plotly Express is used to create line charts of the original and perturbed signals, which are then displayed using `st.plotly_chart()`.
+The process can be described using the following steps:
 
-## Running Tests
-Duration: 00:05
-
-To ensure the application is functioning correctly, you can run the unit and integration tests.
-
-1.  Navigate to the directory containing the `tests` directory in your terminal.
-2.  Run the unit tests:
-
-    ```bash
-    python -m unittest tests/unit_tests.py
-    ```
-
-3.  Run the integration tests:
-
-    ```bash
-    python -m unittest tests/integration_tests.py
-    ```
-
-The tests verify the basic functionality of the application, such as data generation, chart creation, and page navigation.
-
-## Expanding the Application
-Duration: 00:15
-
-This application provides a foundation for exploring adversarial machine learning concepts. Here are some ideas for expanding the application:
-
-*   **Implement different attack methods:** Instead of simply adding random noise, explore more sophisticated attack algorithms like the Fast Gradient Sign Method (FGSM).
-*   **Use a real dataset:**  Integrate a real-world dataset and train a simple machine learning model. Then, demonstrate how adversarial attacks can affect the model's predictions.
-*   **Add robustness techniques:**  Implement and visualize techniques for defending against adversarial attacks, such as adversarial training or input sanitization.
-*   **Interactive visualizations:** Enhance the visualizations to provide more detailed insights into the effects of adversarial attacks. For example, you could display the difference between the original and perturbed signals.
+1.  **Data Generation and Model Training**: Synthetic 2D data is generated, and a logistic regression model is trained on it. The data is split into training and testing sets.
+2.  **ART Integration**: The trained model is wrapped in an ART `SklearnClassifier`.  This allows ART to interact with the model for attack generation and defense.
+3.  **Adversarial Attack**: The Fast Gradient Method (FGM) attack is instantiated with a user-controlled epsilon value (perturbation strength). The `st.slider` widget allows the user to adjust the epsilon value interactively.  The attack is then applied to the test data to generate adversarial examples.
+4.  **Evaluation**: The model is evaluated on both clean and adversarial examples, and the accuracy is displayed.
+5.  **Visualization**: A scatter plot visualizes a subset of the clean and adversarial samples, colored by their predicted class. The `symbol` parameter distinguishes between clean and adversarial samples.
+6.  **Key Findings**: Emphasizes the impact of small perturbations on the model's predictions.
 
 <aside class="negative">
-  Remember that adversarial machine learning is a constantly evolving field. It's important to stay up-to-date with the latest research and techniques.
+The epsilon parameter controls the magnitude of the perturbation. Higher epsilon values result in stronger attacks, but also more noticeable changes to the input data.
 </aside>
 
-## Conclusion
+### Fast Gradient Method (FGM)
 
-This codelab provided a hands-on introduction to the QuCreate Streamlit Lab application. You learned how to navigate the application, interact with the adversarial attack visualizer, and understand the underlying code. By expanding upon this foundation, you can further explore the fascinating and important field of adversarial machine learning.
+FGM is a simple yet effective adversarial attack. It works by calculating the gradient of the loss function with respect to the input and then perturbing the input in the direction that maximizes the loss.
+
+Mathematically, the adversarial example x' is generated as follows:
+
+x' = x + epsilon * sign(grad(J(theta, x, y)))
+
+where:
+
+*   x is the original input
+*   epsilon is the perturbation magnitude
+*   J is the loss function
+*   theta represents the model's parameters
+*   y is the true label
+*   grad is the gradient operator
+*   sign is the sign function
+
+### Architecture Diagram
+```mermaid
+graph LR
+    A[Original Input (x)] --> B(Calculate Gradient);
+    B --> C{Sign(Gradient)};
+    C --> D[Epsilon (ε)];
+    D --> E(ε * Sign(Gradient));
+    E --> F{x' = x + E};
+    F --> G[Adversarial Example (x')];
+```
+
+### Key Functionalities and Code Explanation:
+
+*   **Import Necessary Libraries:**  The script imports libraries like `streamlit`, `numpy`, `plotly`, `sklearn`, and `art`.
+*   **Generate Synthetic Data:** Creates a 2D synthetic dataset.
+*   **Train Logistic Regression Model:** Trains a simple logistic regression model using scikit-learn.
+*   **Wrap Model with ART:** Wraps the scikit-learn model with `SklearnClassifier` from the `art` library, which is necessary for using ART's attack methods.
+*   **Implement FGM Attack:** Uses the `FastGradientMethod` from ART to generate adversarial examples.  The strength of the attack is controlled by the `epsilon` parameter, which is set using a Streamlit slider.
+*   **Evaluate Model Performance:** Evaluates the model's accuracy on both the original test data and the adversarial examples.
+*   **Visualize Results:**  Uses Plotly to display the original and adversarial examples, allowing users to visually assess the impact of the attack.
+
+This page clearly demonstrates the vulnerability of machine learning models to adversarial attacks and provides a hands-on experience in generating and visualizing adversarial examples.
+
+## Conclusion
+Duration: 00:05
+
+This codelab provided a step-by-step guide to understanding and running a Streamlit application that visualizes adversarial attacks. By exploring the Data Overview and Attack Demo pages, you learned how to generate synthetic data, train a simple machine learning model, and use the Adversarial Robustness Toolbox (ART) to create and visualize adversarial examples. This application serves as a valuable tool for understanding the vulnerabilities of machine learning models and the importance of developing robust defenses against adversarial attacks.
